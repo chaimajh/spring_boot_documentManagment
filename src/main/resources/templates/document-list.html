@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Gestion des Documents</title>
+    <link th:replace="layout/default-layout::link">
+    <script type="text/javascript">
+        function submitForm() {
+            document.getElementById("filterForm").submit();
+        }
+    </script>
+</head>
+
+<body th:replace="layout/default-layout::body(title='Gestion des Documents')">
+    <div th:fragment="content">
+        <div class="row mt-3 mb-4">
+            <div class="col-8">
+                <a class="btn btn-primary" th:href="@{/documents/create}">Ajouter un Document</a>
+            </div>
+            <div class="col-4">
+                <p><strong>Trier par Catégorie :</strong></p>
+                <form th:action="@{/documents/filter}" method="get" id="filterForm">
+                    <label>
+                        <input type="radio" name="sortByCategory" value="asc" th:checked="${sortByCategory=='asc'}" onchange="submitForm()"> Ascendant
+                    </label>
+                    <label>
+                        <input type="radio" name="sortByCategory" value="desc" th:checked="${sortByCategory=='desc'}" onchange="submitForm()"> Descendant
+                    </label>
+                </form>
+            </div>
+        </div>
+
+        <table class="table table-hover" th:unless="${#lists.isEmpty(documents)}">
+            <thead>
+                <tr class="table-dark">
+                    <th>ID</th>
+                    <th>Titre</th>
+                    <th>Auteur</th>
+                    <th>Catégorie</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="document, state : ${documents}" th:class="${state.even} ? 'table-light' : ''">
+                    <td th:text="${document.id}"></td>
+                    <td th:text="${document.title}"></td>
+                   
+                    <td>
+                        <div class="row">
+                            <form class="col-4" th:action="@{|/documents/${document.id}/edit|}" method="get">
+                                <input type="submit" class="btn btn-success" value="Modifier">
+                            </form>
+                            <form class="col-8" th:action="@{|/documents/${document.id}/delete|}" method="post" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce document ?');">
+                                <input type="submit" class="btn btn-danger" value="Supprimer">
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="alert alert-warning" th:if="${#lists.isEmpty(documents)}">
+            Aucun document trouvé !
+        </div>
+
+        <div>
+            <ul class="pagination pagination-sm">
+                <li class="page-item" th:classappend="${currentPage == 0 ? 'disabled' : ''}">
+                    <a class="page-link" th:href="${sortByCategory == null ? '@{|/documents?page=' + (currentPage - 1) + '|}' : '@{|/documents/filter?sortByCategory=' + sortByCategory + '&page=' + (currentPage - 1) + '|}'}">&laquo;</a>
+                </li>
+                <li th:each="index : ${#numbers.sequence(0, totalPages - 1)}" class="page-item" th:classappend="${currentPage == index ? 'active' : ''}">
+                    <a class="page-link" th:href="${sortByCategory == null ? '@{|/documents?page=' + index + '|}' : '@{|/documents/filter?sortByCategory=' + sortByCategory + '&page=' + index + '|}'}" th:text="${index + 1}"></a>
+                </li>
+                <li class="page-item" th:classappend="${currentPage == totalPages - 1 ? 'disabled' : ''}">
+                    <a class="page-link" th:href="${sortByCategory == null ? '@{|/documents?page=' + (currentPage + 1) + '|}' : '@{|/documents/filter?sortByCategory=' + sortByCategory + '&page=' + (currentPage + 1) + '|}'}">&raquo;</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

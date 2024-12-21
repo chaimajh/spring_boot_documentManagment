@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Add Document</title>
+    <link th:replace="layout/default-layout::link">
+    <script type="text/javascript"></script>
+</head>
+
+<body th:replace="layout/default-layout::body(title='Add Document')">
+<div th:fragment="content">
+    <div class="mt-3 mb-4">
+        <a class="btn btn-primary" th:href="@{/documents}">Back</a>
+    </div>
+
+    <form th:action="@{/documents/create}" th:object="${documentForm}" method="POST" enctype="multipart/form-data">
+        <div>
+            <label for="title" class="form-label mt-4">Title</label>
+            <input type="text" class="form-control mt-2" name="title"
+                   th:classappend="${#fields.hasErrors('title')}?is-invalid"
+                   th:field="*{title}">
+            <span th:if="${#fields.hasErrors('title')}"
+                  th:errors="*{title}"
+                  class="invalid-feedback">Title Error</span>
+        </div>
+
+        <div>
+            <label for="description" class="form-label mt-4">Description</label>
+            <textarea class="form-control mt-2" name="description"
+                      th:classappend="${#fields.hasErrors('description')}?is-invalid"
+                      th:field="*{description}"></textarea>
+            <span th:if="${#fields.hasErrors('description')}"
+                  th:errors="*{description}"
+                  class="invalid-feedback">Description Error</span>
+        </div>
+
+        <div>
+            <label class="form-label mt-4" for="category">Category</label>
+            <select class="form-select" id="category" th:field="*{category}">
+                <option value="" selected disabled>Choose Category</option>
+                <option th:each="category : ${categories}"
+                        th:value="${category.id}"
+                        th:text="${category.name}"></option>
+            </select>
+        </div>
+
+        <div>
+            <label class="form-label mt-4" for="file">File</label>
+            <input type="file" name="file" class="form-control mt-2" th:field="*{file}">
+        </div>
+
+        <div class="mt-4">
+            <input class="btn btn-success" type="submit" value="Save">
+        </div>
+    </form>
+</div>
+</body>
+
+</html>
