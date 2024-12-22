@@ -24,6 +24,7 @@
                       th:errors="*{title}" 
                       class="invalid-feedback">Title Error</span>
             </div>
+         
             <div>
                 <label for="description" class="form-label mt-4">Description</label>
                 <textarea class="form-control mt-2" name="description" 
@@ -33,15 +34,8 @@
                       th:errors="*{description}" 
                       class="invalid-feedback">Description Error</span>
             </div>
-            <div>
-                <label class="form-label mt-4" for="category">Category</label>
-                <select class="form-select" id="category" th:field="*{category}">
-                    <option value="" selected disabled>Choose Category</option>
-                    <option th:each="category : ${categories}" 
-                            th:value="${category.id}" 
-                            th:text="${category.name}"></option>
-                </select>
-            </div>
+        
+            
             <div>
                 <img th:src="${documentForm.file != null} ? @{|/files/${documentForm.file}|} : @{/images/default.png}" 
                      alt="document"
